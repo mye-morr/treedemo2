@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<astreeview>
+  <astreeview-nodes>
+    <astreeview-node node-text="red wine" node-value="44" node-type="0" checked-state="2" open-state="0" selected="true" enable-edit-context-menu="true" enable-delete-context-menu="true" enable-add-context-menu="true" node-icon="" enable-drag-drop="true" enable-siblings="true" enable-children="true" enable-checkbox="true" enable-selection="true" enable-open-close="true" />
+    <astreeview-node node-text="red wine" node-value="45" node-type="0" checked-state="2" open-state="0" selected="false" enable-edit-context-menu="true" enable-delete-context-menu="true" enable-add-context-menu="true" node-icon="" enable-drag-drop="true" enable-siblings="true" enable-children="true" enable-checkbox="true" enable-selection="true" enable-open-close="true" />
+    <astreeview-node node-text="alpha" node-value="46" node-type="0" checked-state="2" open-state="0" selected="false" enable-edit-context-menu="true" enable-delete-context-menu="true" enable-add-context-menu="true" node-icon="" enable-drag-drop="true" enable-siblings="true" enable-children="true" enable-checkbox="true" enable-selection="true" enable-open-close="true" />
+  </astreeview-nodes>
+</astreeview>
