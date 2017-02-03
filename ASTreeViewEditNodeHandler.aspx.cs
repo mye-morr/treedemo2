@@ -1,4 +1,5 @@
 #region using
+using Goldtect;
 using System;
 using System.Data;
 using System.Data.OleDb;
@@ -7,7 +8,7 @@ using System.Web.UI;
 
 #endregion
 
-namespace Goldtect.ASTreeViewDemo
+namespace ASTreeViewDemo
 {
 	public partial class ASTreeViewEditNodeHandler : PageBase
 	{
