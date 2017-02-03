@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="CreateUser.aspx.cs" Inherits="Goldtect.ASTreeViewDemo.CreateUser" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="CreateUser.aspx.cs" Inherits="ASTreeViewDemo.CreateUser" %>
 
 <!DOCTYPE html>
 

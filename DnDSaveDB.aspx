@@ -1,4 +1,4 @@
-<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="DnDSaveDB.aspx.cs" Inherits="Goldtect.ASTreeViewDemo.DnDSaveDB" %>
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="DnDSaveDB.aspx.cs" Inherits="ASTreeViewDemo.DnDSaveDB" %>
 <%@ Register Assembly="Goldtect.ASTreeView" Namespace="Goldtect" TagPrefix="astv" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -71,6 +71,8 @@
                 <asp:TextBox ID="txtNodeTreeName" runat="server"></asp:TextBox>
                 <asp:TextBox ID="txtParentValue" runat="server"></asp:TextBox>
                 <asp:TextBox ID="txtParentTreeName" runat="server"></asp:TextBox>
+                <asp:TextBox ID="lblRoot" runat="server" />
+                <asp:TextBox ID="lblRoot2" runat="server" />
             </div>
             <table id="sample" width="100%">
                 <tr>
@@ -102,7 +104,7 @@
                     <td  style="background-color:yellow"> 
                         <table width="100%" border="0">
                             <tr>
-                                <td><asp:TextBox ID="lblRoot" runat="server" Text="0" visible="true" />
+                                <td>
                         Selected Left Node :</td>
                             </tr>
                              <tr>
@@ -119,7 +121,7 @@
                     <td  style="background-color:cyan"> 
                         <table width="100%" border="0">
                             <tr>
-                                <td><asp:TextBox ID="lblRoot2" runat="server" Text="0" visible="true" /> Selected Right Node :</td>
+                                <td> Selected Right Node :</td>
                             </tr>
                             <tr>
                                 <td><asp:TextBox ID="tbItem2" runat="server" Text="" Rows="35" TextMode="multiline" Width="100%" /> </td>

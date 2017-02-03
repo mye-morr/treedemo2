@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Goldtect.ASTreeViewDemo {
+namespace ASTreeViewDemo {
     
     
     public partial class CreateUser {

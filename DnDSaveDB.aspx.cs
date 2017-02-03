@@ -15,7 +15,7 @@ using Goldtect;
 
 #endregion
 
-namespace Goldtect.ASTreeViewDemo
+namespace ASTreeViewDemo
 {
     public partial class DnDSaveDB : PageBase
     {
@@ -48,7 +48,6 @@ namespace Goldtect.ASTreeViewDemo
                 ASTreeViewXMLDescriptor descripter = new ASTreeViewXMLDescriptor();
                 this.astvMyTree1.DataSourceDescriptor = descripter;
 
-                String foo = ddlRoot1.SelectedValue;
                 if (File.Exists(Server.MapPath("~/" + ddlRoot1.SelectedValue + ".xml")))
                 {
                     doc.Load(Server.MapPath("~/" + ddlRoot1.SelectedValue + ".xml"));

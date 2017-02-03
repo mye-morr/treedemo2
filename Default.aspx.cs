@@ -6,7 +6,7 @@ using System.Web.Security;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-namespace Goldtect.ASTreeViewDemo
+namespace ASTreeViewDemo
 {
     public partial class Default : System.Web.UI.Page
     {

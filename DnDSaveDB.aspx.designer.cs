@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Goldtect.ASTreeViewDemo {
+namespace ASTreeViewDemo {
     
     
     public partial class DnDSaveDB {
@@ -130,6 +130,24 @@ namespace Goldtect.ASTreeViewDemo {
         protected global::System.Web.UI.WebControls.TextBox txtParentTreeName;
         
         /// <summary>
+        /// lblRoot control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox lblRoot;
+        
+        /// <summary>
+        /// lblRoot2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox lblRoot2;
+        
+        /// <summary>
         /// aslTreeOne control.
         /// </summary>
         /// <remarks>
@@ -175,15 +193,6 @@ namespace Goldtect.ASTreeViewDemo {
         protected global::Goldtect.ASTreeView astvMyTree1;
         
         /// <summary>
-        /// lblRoot control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox lblRoot;
-        
-        /// <summary>
         /// tbItem control.
         /// </summary>
         /// <remarks>
@@ -209,15 +218,6 @@ namespace Goldtect.ASTreeViewDemo {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnAdd;
-        
-        /// <summary>
-        /// lblRoot2 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox lblRoot2;
         
         /// <summary>
         /// tbItem2 control.
