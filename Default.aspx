@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="Goldtect.ASTreeViewDemo.Default" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="ASTreeViewDemo.Default" %>
 <%@ Import Namespace="System.Web.Security" %>
 <!DOCTYPE html>
 

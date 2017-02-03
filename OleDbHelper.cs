@@ -3,7 +3,7 @@ using System.Data;
 using System.Data.OleDb;
 using System.Collections;
 
-namespace Goldtect.ASTreeViewDemo
+namespace ASTreeViewDemo
 {
 	/// <summary>
 	/// The OleDbHelper class is intended to encapsulate high performance, scalable best practices for 
