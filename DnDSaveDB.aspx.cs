@@ -298,6 +298,9 @@ namespace ASTreeViewDemo
             this.astvMyTree1.RootNode.Clear();
             BindData();
             btnAdd.Enabled = cekOwner(ddlRoot1.SelectedValue);
+            tbItem.Text = "";
+            lblRoot.Text = "";
+            this.astvMyTree1.ClearNodesSelection();
         }
 
         protected void ddlRoot2_SelectedIndexChanged(object sender, EventArgs e)
@@ -306,6 +309,9 @@ namespace ASTreeViewDemo
             this.astvMyTree2.RootNode.Clear();
             BindData();
             btnAdd2.Enabled = cekOwner(ddlRoot2.SelectedValue);
+            tbItem2.Text = "";
+            lblRoot2.Text = "";
+            this.astvMyTree2.ClearNodesSelection();
         }
 
         protected void btnShare_Click(object sender, EventArgs e)
