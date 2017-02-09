@@ -21,6 +21,7 @@ namespace ASTreeViewDemo
     {
         protected void Page_Load( object sender, EventArgs e )
         {
+            String foo = Session["UserName"].ToString();
             lbUsername.Text = Session["UserName"].ToString();
 
             if (Session["UserName"]==null)
@@ -125,21 +126,21 @@ namespace ASTreeViewDemo
         {
             if (cekOwner(astvMyTree1.RootNodeValue))
             {
-                XmlDocument doc = astvMyTree1.GetTreeViewXML();
-                doc.Save(Server.MapPath("~/" + astvMyTree1.RootNodeValue + ".xml"));
-                BindData();
+                XmlDocument doc1 = astvMyTree1.GetTreeViewXML();
+                doc1.Save(Server.MapPath("~/" + astvMyTree1.RootNodeValue + ".xml"));
             }
             if (cekOwner(astvMyTree2.RootNodeValue))
             {
-                XmlDocument doc = astvMyTree2.GetTreeViewXML();
-                doc.Save(Server.MapPath("~/" + astvMyTree2.RootNodeValue + ".xml"));
-                BindData();
+                XmlDocument doc2 = astvMyTree2.GetTreeViewXML();
+                doc2.Save(Server.MapPath("~/" + astvMyTree2.RootNodeValue + ".xml"));
             }
         }
 
         protected void btnSaveDragDrop_Click(object sender, EventArgs e)
         {
             saveAll();
+            BindData();
+
             //if(txtNodeTreeName.Text.Equals(txtParentTreeName.Text))
             //{
             //    XmlDocument doc = astvMyTree1.GetTreeViewXML();
@@ -209,8 +210,8 @@ namespace ASTreeViewDemo
             if (String.IsNullOrEmpty(lblRoot.Text))
                 return;
 
-            OleDbHelper.ExecuteNonQuery(base.NorthWindConnectionString, CommandType.Text, string.Format("Update ProductsTree set ProductName='{0}' where ProductId={1}", tbItem.Text, lblRoot.Text));
-            String qry = "select SUBSTRING([ProductName], 1, CASE CHARINDEX(CHAR(10), [ProductName]) WHEN 0 THEN LEN([ProductName]) ELSE CHARINDEX(char(10), [ProductName]) - 1 END) as ProductName from [ProductsTree] where ProductID=" + lblRoot.Text;
+            OleDbHelper.ExecuteNonQuery(base.NorthWindConnectionString, CommandType.Text, string.Format("UPDATE ProductsTree set ProductName='{0}' where ProductId={1}", tbItem.Text, lblRoot.Text));
+            String qry = "SELECT SUBSTRING([ProductName], 1, CASE CHARINDEX(CHAR(10), [ProductName]) WHEN 0 THEN LEN([ProductName]) ELSE CHARINDEX(char(10), [ProductName]) - 1 END) as ProductName from [ProductsTree] where ProductID=" + lblRoot.Text;
 
             ASTreeViewNode selectedNode = astvMyTree1.FindByValue(lblRoot.Text);
             selectedNode.NodeText = (string)OleDbHelper.ExecuteScalar(base.NorthWindConnectionString, CommandType.Text, qry);
@@ -223,14 +224,17 @@ namespace ASTreeViewDemo
 
         protected void btnAdd_Click(object sender, EventArgs e)
         {
+            /*
             if (String.IsNullOrEmpty(tbItem.Text))
                 return;
-            string maxSql = string.Format("select max( productId ) from ProductsTree");
+            */
+
+            string maxSql = string.Format("SELECT MAX(productId) from ProductsTree");
             int max = (int)OleDbHelper.ExecuteScalar(base.NorthWindConnectionString, CommandType.Text, maxSql);
             int newId = max + 1;
 
-            OleDbHelper.ExecuteNonQuery(base.NorthWindConnectionString, CommandType.Text, string.Format("INSERT INTO ProductsTree (ProductId, ProductName, ParentId,Username) VALUES({0}, '{1}', {3},'{2}')", newId, tbItem.Text, Session["UserName"].ToString(),ddlRoot1.SelectedValue));
-            String qry = "select SUBSTRING([ProductName], 1, CASE CHARINDEX(CHAR(10), [ProductName]) WHEN 0 THEN LEN([ProductName]) ELSE CHARINDEX(char(10), [ProductName]) - 1 END) as ProductName from [ProductsTree] where ProductID=" + newId.ToString();
+            OleDbHelper.ExecuteNonQuery(base.NorthWindConnectionString, CommandType.Text, string.Format("INSERT INTO ProductsTree (ProductId, ProductName, ParentId, Username) VALUES({0},'{1}',{3},'{2}')", newId, "Untitled", Session["UserName"].ToString(),ddlRoot1.SelectedValue));
+            String qry = "SELECT SUBSTRING([ProductName], 1, CASE CHARINDEX(CHAR(10), [ProductName]) WHEN 0 THEN LEN([ProductName]) ELSE CHARINDEX(char(10), [ProductName]) - 1 END) as ProductName from [ProductsTree] where ProductID=" + newId.ToString();
 
             ASTreeViewNode newNode = new ASTreeViewNode((string)OleDbHelper.ExecuteScalar(base.NorthWindConnectionString, CommandType.Text, qry), newId.ToString());
             List<KeyValuePair<string, string>> attrib=new List<KeyValuePair<string, string>>();
@@ -243,14 +247,39 @@ namespace ASTreeViewDemo
             BindData();
         }
 
+        protected void btnAdd2_Click(object sender, EventArgs e)
+        {
+            /*
+            if (String.IsNullOrEmpty(tbItem2.Text))
+                return;
+            */
+
+            string maxSql = string.Format("SELECT MAX(productId) from ProductsTree");
+            int max = (int)OleDbHelper.ExecuteScalar(base.NorthWindConnectionString, CommandType.Text, maxSql);
+            int newId = max + 1;
+
+            OleDbHelper.ExecuteNonQuery(base.NorthWindConnectionString, CommandType.Text, string.Format("INSERT INTO ProductsTree (ProductId, ProductName, ParentId, Username) VALUES({0},'{1}',{3},'{2}')", newId, "Untitled", Session["UserName"].ToString(), ddlRoot2.SelectedValue));
+            String qry = "SELECT SUBSTRING([ProductName], 1, CASE CHARINDEX(CHAR(10), [ProductName]) WHEN 0 THEN LEN([ProductName]) ELSE CHARINDEX(char(10), [ProductName]) - 1 END) as ProductName from [ProductsTree] where ProductID=" + newId.ToString();
+
+            ASTreeViewNode newNode = new ASTreeViewNode((string)OleDbHelper.ExecuteScalar(base.NorthWindConnectionString, CommandType.Text, qry), newId.ToString());
+            List<KeyValuePair<string, string>> attrib = new List<KeyValuePair<string, string>>();
+
+            ASTreeViewNode rootNode = astvMyTree2.FindByValue(ddlRoot2.Text);
+            rootNode.AppendChild(newNode);
+
+            XmlDocument doc = astvMyTree2.GetTreeViewXML();
+            doc.Save(Server.MapPath("~/" + ddlRoot2.SelectedValue + ".xml"));
+            BindData();
+        }
+
         protected void AddNewNode(string newText)
         {
-            string maxSql = string.Format("select max( productId ) from ProductsTree");
+            string maxSql = string.Format("SELECT MAX(productId) from ProductsTree");
             int max = (int)OleDbHelper.ExecuteScalar(base.NorthWindConnectionString, CommandType.Text, maxSql);
             int newId = max + 1;
 
             OleDbHelper.ExecuteNonQuery(base.NorthWindConnectionString, CommandType.Text, string.Format("INSERT INTO ProductsTree (ProductId, ProductName, ParentId,Username) VALUES({0}, '{1}', 0,'{2}')", newId, newText, Session["UserName"].ToString()));
-            String qry = "select SUBSTRING([ProductName], 1, CASE CHARINDEX(CHAR(10), [ProductName]) WHEN 0 THEN LEN([ProductName]) ELSE CHARINDEX(char(10), [ProductName]) - 1 END) as ProductName from [ProductsTree] where ProductID=" + newId.ToString();
+            String qry = "SELECT SUBSTRING([ProductName], 1, CASE CHARINDEX(CHAR(10), [ProductName]) WHEN 0 THEN LEN([ProductName]) ELSE CHARINDEX(char(10), [ProductName]) - 1 END) as ProductName from [ProductsTree] where ProductID=" + newId.ToString();
         }
 
         protected void btnUpdat2_Click(object sender, EventArgs e)
@@ -262,31 +291,10 @@ namespace ASTreeViewDemo
                 return;
 
             OleDbHelper.ExecuteNonQuery(base.NorthWindConnectionString, CommandType.Text, string.Format("Update ProductsTree set ProductName='{0}' where ProductId={1}", tbItem2.Text, lblRoot2.Text));
-            String qry = "select SUBSTRING([ProductName], 1, CASE CHARINDEX(CHAR(10), [ProductName]) WHEN 0 THEN LEN([ProductName]) ELSE CHARINDEX(char(10), [ProductName]) - 1 END) as ProductName from [ProductsTree] where ProductID=" + lblRoot2.Text;
+            String qry = "SELECT SUBSTRING([ProductName], 1, CASE CHARINDEX(CHAR(10), [ProductName]) WHEN 0 THEN LEN([ProductName]) ELSE CHARINDEX(char(10), [ProductName]) - 1 END) as ProductName from [ProductsTree] where ProductID=" + lblRoot2.Text;
             
             ASTreeViewNode selectedNode = astvMyTree2.FindByValue(lblRoot2.Text);
             selectedNode.NodeText = (string)OleDbHelper.ExecuteScalar(base.NorthWindConnectionString, CommandType.Text, qry);
-            XmlDocument doc = astvMyTree2.GetTreeViewXML();
-            doc.Save(Server.MapPath("~/" + ddlRoot2.SelectedValue + ".xml"));
-            BindData();
-        }
-
-        protected void btnAdd2_Click(object sender, EventArgs e)
-        {
-            if (String.IsNullOrEmpty(tbItem2.Text))
-                return;
-            string maxSql = string.Format("select max( productId ) from ProductsTree");
-            int max = (int)OleDbHelper.ExecuteScalar(base.NorthWindConnectionString, CommandType.Text, maxSql);
-            int newId = max + 1;
-
-            OleDbHelper.ExecuteNonQuery(base.NorthWindConnectionString, CommandType.Text, string.Format("INSERT INTO ProductsTree (ProductId, ProductName, ParentId,Username) VALUES({0}, '{1}', {3},'{2}')", newId, tbItem2.Text, Session["UserName"].ToString(), ddlRoot2.SelectedValue));
-            String qry = "select SUBSTRING([ProductName], 1, CASE CHARINDEX(CHAR(10), [ProductName]) WHEN 0 THEN LEN([ProductName]) ELSE CHARINDEX(char(10), [ProductName]) - 1 END) as ProductName from [ProductsTree] where ProductID=" + newId.ToString();
-
-            ASTreeViewNode newNode = new ASTreeViewNode((string)OleDbHelper.ExecuteScalar(base.NorthWindConnectionString, CommandType.Text, qry), newId.ToString());
-
-            ASTreeViewNode rootNode = astvMyTree2.FindByValue(ddlRoot2.Text);
-            rootNode.AppendChild(newNode);
-
             XmlDocument doc = astvMyTree2.GetTreeViewXML();
             doc.Save(Server.MapPath("~/" + ddlRoot2.SelectedValue + ".xml"));
             BindData();
@@ -297,6 +305,7 @@ namespace ASTreeViewDemo
             saveAll();
             this.astvMyTree1.RootNode.Clear();
             BindData();
+
             btnAdd.Enabled = cekOwner(ddlRoot1.SelectedValue);
         }
 
@@ -305,6 +314,7 @@ namespace ASTreeViewDemo
             saveAll();
             this.astvMyTree2.RootNode.Clear();
             BindData();
+
             btnAdd2.Enabled = cekOwner(ddlRoot2.SelectedValue);
         }
 
