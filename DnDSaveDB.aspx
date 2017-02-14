@@ -17,6 +17,8 @@
 
     <script type="text/javascript">
         //parameter must be "elem", "newParent"
+        var updatedText=[];
+
         function dndCompletedHandler(elem, newParent) {
 
             var nodeAdditionalAttr = JSON.parse(elem.getAttribute("additional-attributes"));
@@ -34,9 +36,24 @@
         }
 
         function nodeSelectHandler(elem) {
+            if(document.getElementById("<%#lblRoot.ClientID%>").value !=0)
+            {
+                if(document.getElementById("<%#prevText.ClientID%>").value != document.getElementById("<%#tbItem.ClientID%>").value)
+                {
+                    alert("your previous changes haven't been saved");
+                    return false;
+                }
+            }
+
             var nodeAdditionalAttr = JSON.parse(elem.parentNode.getAttribute("additional-attributes"));
             document.getElementById("<%#tbItem.ClientID%>").value = nodeAdditionalAttr.LongText;
             document.getElementById("<%#lblRoot.ClientID%>").value = elem.parentNode.getAttribute("treeNodeValue");
+
+            document.getElementById("<%#prevText.ClientID%>").value = nodeAdditionalAttr.LongText;
+
+            
+
+            
         }
 
         function nodeSelectHandler2(elem) {
@@ -45,6 +62,9 @@
             document.getElementById("<%#lblRoot2.ClientID%>").value = elem.parentNode.getAttribute("treeNodeValue");
         }
 
+        jQuery('#some_text_box').on('input', function () {
+            // do your stuff
+        });
     </script>
     
 </head>
@@ -65,14 +85,16 @@
        
         <asp:UpdatePanel ID="upPanel2" runat="server">
             <ContentTemplate>
-            <div style="border:2px solid red;padding:6px;color:red;display:none;">
+            <div style="border:2px solid red;padding:6px;color:red;display:block;">
 
                 <asp:TextBox ID="txtNodeValue" runat="server"></asp:TextBox>
                 <asp:TextBox ID="txtNodeTreeName" runat="server"></asp:TextBox>
                 <asp:TextBox ID="txtParentValue" runat="server"></asp:TextBox>
                 <asp:TextBox ID="txtParentTreeName" runat="server"></asp:TextBox>
-                <asp:TextBox ID="lblRoot" runat="server" />
-                <asp:TextBox ID="lblRoot2" runat="server" />
+                <asp:TextBox ID="lblRoot" runat="server" Text="0" />
+                <asp:TextBox ID="lblRoot2" runat="server" Text="0" />
+
+                <asp:TextBox ID="prevText" runat="server" Text="0" />
             </div>
             <table id="sample" width="100%">
                 <tr>
@@ -97,11 +119,13 @@
                             AutoPostBack="false"
                             RelatedTrees="astvMyTree2" 
                             EnableContextMenuAdd="false"
+                            EnableAjaxOnEditDelete="false"
                             OnNodeDragAndDropCompletedScript="dndCompletedHandler( elem, newParent )"
                             OnNodeSelectedScript="nodeSelectHandler(elem)"
                             />
                     </td>
                     <td  style="background-color:yellow"> 
+                         <img id = "imgDisplay" alt="" src="" style = "display:block"/>
                         <table width="100%" border="0">
                             <tr>
                                 <td>
