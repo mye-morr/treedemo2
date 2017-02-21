@@ -11,6 +11,8 @@ using System.Xml;
 using System.IO;
 using System.Web.UI.HtmlControls;
 
+using System.Web.Services;
+
 using Goldtect;
 
 #endregion
@@ -19,6 +21,9 @@ namespace ASTreeViewDemo
 {
     public partial class DnDSaveDB : PageBase
     {
+
+        
+
         protected void Page_Load( object sender, EventArgs e )
         {
             lbUsername.Text = Session["UserName"].ToString();
@@ -140,27 +145,6 @@ namespace ASTreeViewDemo
         protected void btnSaveDragDrop_Click(object sender, EventArgs e)
         {
             saveAll();
-            //if(txtNodeTreeName.Text.Equals(txtParentTreeName.Text))
-            //{
-            //    XmlDocument doc = astvMyTree1.GetTreeViewXML();
-            //    if(cekOwner(ddlRoot1.SelectedValue))
-            //        doc.Save(Server.MapPath("~/" + ddlRoot1.SelectedValue + ".xml"));
-            //    BindData();
-            //}
-            //else if (txtNodeTreeName.Text.Equals("astvMyTree1"))
-            //{
-            //    XmlDocument doc = astvMyTree2.GetTreeViewXML();
-            //    if (cekOwner(ddlRoot2.SelectedValue))
-            //        doc.Save(Server.MapPath("~/" + ddlRoot2.SelectedValue + ".xml"));
-            //    BindData();
-            //}
-            //else if (txtNodeTreeName.Text.Equals("astvMyTree2"))
-            //{
-            //    XmlDocument doc = astvMyTree1.GetTreeViewXML();
-            //    if (cekOwner(ddlRoot1.SelectedValue))
-            //        doc.Save(Server.MapPath("~/" + ddlRoot1.SelectedValue + ".xml"));
-            //    BindData();
-            //}
         }
 
         private bool cekOwner(string productID)
@@ -214,6 +198,8 @@ namespace ASTreeViewDemo
 
             ASTreeViewNode selectedNode = astvMyTree1.FindByValue(lblRoot.Text);
             selectedNode.NodeText = (string)OleDbHelper.ExecuteScalar(base.NorthWindConnectionString, CommandType.Text, qry);
+
+            prevText.Text = tbItem.Text;
 
             XmlDocument doc = astvMyTree1.GetTreeViewXML();
             doc.Save(Server.MapPath("~/" + ddlRoot1.SelectedValue + ".xml"));
@@ -299,7 +285,7 @@ namespace ASTreeViewDemo
             BindData();
             btnAdd.Enabled = cekOwner(ddlRoot1.SelectedValue);
             tbItem.Text = "";
-            lblRoot.Text = "";
+            lblRoot.Text = "0";
             this.astvMyTree1.ClearNodesSelection();
         }
 
@@ -310,7 +296,7 @@ namespace ASTreeViewDemo
             BindData();
             btnAdd2.Enabled = cekOwner(ddlRoot2.SelectedValue);
             tbItem2.Text = "";
-            lblRoot2.Text = "";
+            lblRoot2.Text = "0";
             this.astvMyTree2.ClearNodesSelection();
         }
 
@@ -324,5 +310,48 @@ namespace ASTreeViewDemo
             OleDbHelper.ExecuteNonQuery(base.NorthWindConnectionString, CommandType.Text, string.Format("INSERT INTO UserAccess (ProductId, UserName) VALUES({0}, '{1}')", ddlRoot1.SelectedValue, tbShare.Text));
            
         }
+
+
+        #region media
+        [WebMethod]
+        public static List<ListItem> GetMedia(int nodeID)
+        {
+            string query = "SELECT MediaID,MediaPath FROM Media where ProductID=" + nodeID;
+            string constr = ConfigurationManager.ConnectionStrings["MaxCConnectionString"].ConnectionString;
+            using (SqlConnection con = new SqlConnection(constr))
+            {
+                using (SqlCommand cmd = new SqlCommand(query))
+                {
+                    List<ListItem> customers = new List<ListItem>();
+                    cmd.CommandType = CommandType.Text;
+                    cmd.Connection = con;
+                    con.Open();
+                    using (SqlDataReader sdr = cmd.ExecuteReader())
+                    {
+                        while (sdr.Read())
+                        {
+                            customers.Add(new ListItem
+                            {
+                                Value = sdr["MediaPath"].ToString(),
+                                Text = sdr["MediaPath"].ToString()
+                            });
+                        }
+                    }
+                    con.Close();
+                    return customers;
+                }
+            }
+        }
+
+        protected void FileUploadComplete(object sender, EventArgs e)
+        {
+            System.IO.Directory.CreateDirectory(Server.MapPath(lblRoot.Text));
+
+            string filename = System.IO.Path.GetFileName(AsyncFileUpload1.FileName);
+            AsyncFileUpload1.SaveAs(Server.MapPath(lblRoot.Text+"/") + filename);
+
+            OleDbHelper.ExecuteNonQuery(base.NorthWindConnectionString, CommandType.Text, string.Format("INSERT INTO Media (ProductId, MediaPath) VALUES({0}, '{1}')", lblRoot.Text, filename));
+        }
+        #endregion
     }
 }
