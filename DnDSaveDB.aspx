@@ -1,5 +1,7 @@
 <%@ Page Language="C#" AutoEventWireup="true" CodeBehind="DnDSaveDB.aspx.cs" Inherits="ASTreeViewDemo.DnDSaveDB" %>
 <%@ Register Assembly="Goldtect.ASTreeView" Namespace="Goldtect" TagPrefix="astv" %>
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
+
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -9,7 +11,7 @@
     <link href="<%#ResolveUrl("~/Scripts/astreeview/astreeview.css")%>" type="text/css" rel="stylesheet" />
     <link href="<%#ResolveUrl("~/Scripts/astreeview/contextmenu.css")%>" type="text/css" rel="stylesheet" />
     <link href="<%#ResolveUrl("~/Scripts/myStyle.css")%>" type="text/css" rel="stylesheet" />
-    <script src="http://code.jquery.com/jquery-1.10.1.min.js" type="text/javascript"></script>
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
     
     <script src="<%#ResolveUrl("~/Scripts/astreeview/astreeview.min.js")%>" type="text/javascript"></script>
     <script src="<%#ResolveUrl("~/Scripts/astreeview/contextmenu.min.js")%>" type="text/javascript"></script>
@@ -17,15 +19,15 @@
 
     <script type="text/javascript">
         //parameter must be "elem", "newParent"
+        var updatedText=[];
+
         function dndCompletedHandler(elem, newParent) {
 
             var nodeAdditionalAttr = JSON.parse(elem.getAttribute("additional-attributes"));
             var nodeValue = elem.getAttribute("treeNodeValue");
-            console.log("node value:" + nodeValue + " tree name:" + nodeAdditionalAttr.treeName);
 
             var parentAdditionalAttr = JSON.parse(newParent.getAttribute("additional-attributes"));
             var parentValue = newParent.getAttribute("treeNodeValue");
-            console.log("node value:" + parentValue + " tree name:" + parentAdditionalAttr.treeName);
 
             document.getElementById("<%#txtNodeValue.ClientID%>").value = nodeValue;
             document.getElementById("<%#txtNodeTreeName.ClientID%>").value = nodeAdditionalAttr.treeName;
@@ -34,15 +36,64 @@
         }
 
         function nodeSelectHandler(elem) {
+            if(document.getElementById("<%#lblRoot.ClientID%>").value !=0)
+            {
+                if(document.getElementById("<%#prevText.ClientID%>").value != document.getElementById("<%#tbItem.ClientID%>").value)
+                {
+                    alert("your previous changes haven't been saved");
+                    return false;
+                }
+            }
+
             var nodeAdditionalAttr = JSON.parse(elem.parentNode.getAttribute("additional-attributes"));
             document.getElementById("<%#tbItem.ClientID%>").value = nodeAdditionalAttr.LongText;
             document.getElementById("<%#lblRoot.ClientID%>").value = elem.parentNode.getAttribute("treeNodeValue");
+
+            document.getElementById("<%#prevText.ClientID%>").value = nodeAdditionalAttr.LongText;
+            GetMedia(document.getElementById("<%#lblRoot.ClientID%>").value);
+           
+        }
+
+        function uploadComplete(sender,args) {
+            GetMedia(document.getElementById("<%#lblRoot.ClientID%>").value);
+            var imgDisplay = $get("imgDisplay");
+            imgDisplay.style.cssText = "height:200px;width:200px";
+            imgDisplay.src = document.getElementById("<%#lblRoot.ClientID%>").value + "/" + args.get_fileName();
         }
 
         function nodeSelectHandler2(elem) {
             var nodeAdditionalAttr = JSON.parse(elem.parentNode.getAttribute("additional-attributes"));
             document.getElementById("<%#tbItem2.ClientID%>").value = nodeAdditionalAttr.LongText;
             document.getElementById("<%#lblRoot2.ClientID%>").value = elem.parentNode.getAttribute("treeNodeValue");
+        }
+
+        function mediaSelectChange(ddl) {
+            var imgDisplay = $get("imgDisplay");
+            imgDisplay.style.cssText = "height:200px;width:200px";
+            imgDisplay.src = document.getElementById("<%#lblRoot.ClientID%>").value + "/" + ddl.value;
+        }
+
+        function GetMedia(nodeID) {
+            $.ajax({
+                type: "POST",
+                url: "DnDSaveDB.aspx/GetMedia",
+                data: '{nodeID: ' + nodeID + '}',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (r) {
+                    var lstMedia = $("[id*=lstMedia]");
+                    lstMedia.empty();
+                    $.each(r.d, function () {
+                        lstMedia.append($("<option></option>").val(this['Value']).html(this['Text']));
+                    });
+                },
+                failure: function (response) {
+                    alert('fail');
+                },
+                error: function (response) {
+                    alert('error');
+                }
+            });
         }
 
     </script>
@@ -71,8 +122,10 @@
                 <asp:TextBox ID="txtNodeTreeName" runat="server"></asp:TextBox>
                 <asp:TextBox ID="txtParentValue" runat="server"></asp:TextBox>
                 <asp:TextBox ID="txtParentTreeName" runat="server"></asp:TextBox>
-                <asp:TextBox ID="lblRoot" runat="server" />
-                <asp:TextBox ID="lblRoot2" runat="server" />
+                <asp:TextBox ID="lblRoot" runat="server" Text="0" />
+                <asp:TextBox ID="lblRoot2" runat="server" Text="0" />
+
+                <asp:TextBox ID="prevText" runat="server" Text="0" />
             </div>
             <table id="sample" width="100%">
                 <tr>
@@ -97,11 +150,13 @@
                             AutoPostBack="false"
                             RelatedTrees="astvMyTree2" 
                             EnableContextMenuAdd="false"
+                             EnableAjaxOnEditDelete="false"
                             OnNodeDragAndDropCompletedScript="dndCompletedHandler( elem, newParent )"
                             OnNodeSelectedScript="nodeSelectHandler(elem)"
                             />
                     </td>
                     <td  style="background-color:yellow"> 
+                         <img id = "imgDisplay" alt="" src="" style = "display:block"/>
                         <table width="100%" border="0">
                             <tr>
                                 <td>
@@ -110,6 +165,18 @@
                              <tr>
                                 <td><asp:TextBox ID="tbItem" runat="server" Text="" Rows="35" TextMode="multiline" Width="100%"  /> </td>
                             </tr>
+                            <tr>
+                                <td>
+                                    <cc1:AsyncFileUpload  runat="server" ID="AsyncFileUpload1" OnClientUploadComplete="uploadComplete"
+    Width="400px" UploaderStyle="Modern" CompleteBackColor="White" UploadingBackColor="#CCFFFF"
+    ThrobberID="imgLoader" OnUploadedComplete="FileUploadComplete" />
+                                    <asp:Image ID="imgLoader" runat="server"  ImageUrl = "~/Images/loader.gif" /> 
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><asp:ListBox ID="lstMedia" runat="server" SelectionMode="Single" onchange="mediaSelectChange(this)"></asp:ListBox></td>
+                            </tr>
+                             
                              <tr>
                                 <td><asp:Button ID="btnUpdate" runat="server" Text="Update selected left Node" OnClick="btnUpdat_Click" />
                         <asp:Button ID="btnAdd" runat="server" Text="Add to bottom left tree" OnClick="btnAdd_Click" /></td>
