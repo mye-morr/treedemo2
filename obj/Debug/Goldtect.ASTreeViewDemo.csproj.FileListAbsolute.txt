@@ -39,3 +39,9 @@ C:\Users\michael\Documents\Visual Studio 2015\Projects\Goldtect.ASTreeViewSample
 \\Mac\Home\Documents\Visual Studio 2015\Projects\treedemo\obj\Debug\Goldtect.ASTreeViewDemo.dll
 \\Mac\Home\Documents\Visual Studio 2015\Projects\treedemo\obj\Debug\Goldtect.ASTreeViewDemo.pdb
 \\Mac\Home\Documents\Visual Studio 2015\Projects\treedemo\obj\Debug\Goldtect.ASTreeViewDemo.csprojResolveAssemblyReference.cache
+\\Mac\Home\Projects\treedemo2\obj\Debug\Goldtect.ASTreeViewDemo.csprojResolveAssemblyReference.cache
+\\Mac\Home\Projects\treedemo2\obj\Debug\Goldtect.ASTreeViewDemo.dll
+\\Mac\Home\Projects\treedemo2\obj\Debug\Goldtect.ASTreeViewDemo.pdb
+\\Mac\Home\Projects\treedemo2\bin\Goldtect.ASTreeViewDemo.dll.config
+\\Mac\Home\Projects\treedemo2\bin\Goldtect.ASTreeViewDemo.dll
+\\Mac\Home\Projects\treedemo2\bin\Goldtect.ASTreeViewDemo.pdb
